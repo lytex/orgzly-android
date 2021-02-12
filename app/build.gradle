@@ -5,6 +5,7 @@ apply plugin: 'kotlin-kapt'
 
 
 android {
+
     dexOptions {
         maxProcessCount 4
         javaMaxHeapSize "2g"
@@ -18,6 +19,7 @@ android {
         applicationId "com.orgzly"
         versionCode 155
         versionName "1.8.4"
+        vectorDrawables.useSupportLibrary = true
 
         testInstrumentationRunner "com.orgzly.android.OrgzlyTestRunner"
         // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
