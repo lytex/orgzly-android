@@ -36,6 +36,7 @@ import com.orgzly.android.usecase.UseCaseResult;
 import com.orgzly.android.util.LogUtils;
 import com.orgzly.android.util.MiscUtils;
 import com.orgzly.org.OrgStringUtils;
+import com.orgzly.android.prefs.AppPreferences;
 
 import java.io.File;
 import java.io.IOException;
@@ -168,7 +169,8 @@ public class ShareActivity extends CommonActivity
                 }
 
             } else if (ATTACH_METHOD_COPY_DIR.equals(AppPreferences.attachMethod(this))) {
-                handleCopyFile(intent, data, "file:");
+                String attachDirPath = AppPreferences.attachDirDefaultPath(this);
+                handleCopyFile(intent, data, "file:"+attachDirPath+"/");
             } else if (ATTACH_METHOD_COPY_ID.equals(AppPreferences.attachMethod(this))) {
                 handleCopyFile(intent, data, "attachment:");
             } else {
