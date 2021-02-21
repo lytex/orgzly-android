@@ -3,6 +3,7 @@ package com.orgzly.android.ui.note
 import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Typeface
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -66,6 +67,9 @@ class NoteFragment : Fragment(), View.OnClickListener, TimestampDialogFragment.O
     /** Initial content, used for when sharing. */
     private var initialContent: String? = null
 
+    /** Content URI of the attachment, used for when a file is being shared. */
+    private var attachmentUri: Uri? = null
+
     @Inject
     internal lateinit var dataRepository: DataRepository
 
@@ -117,6 +121,7 @@ class NoteFragment : Fragment(), View.OnClickListener, TimestampDialogFragment.O
 
             initialTitle = getString(ARG_TITLE)
             initialContent = getString(ARG_CONTENT)
+            attachmentUri = getString(ARG_ATTACHMENT_URI)?.let { Uri.parse(it) }
         }
     }
 
@@ -134,7 +139,8 @@ class NoteFragment : Fragment(), View.OnClickListener, TimestampDialogFragment.O
                 noteId,
                 place,
                 initialTitle,
-                initialContent)
+                initialContent,
+                attachmentUri)
 
         viewModel = ViewModelProviders.of(this, factory).get(NoteViewModel::class.java)
 
@@ -414,6 +420,7 @@ class NoteFragment : Fragment(), View.OnClickListener, TimestampDialogFragment.O
 
         binding.bodyView.setRawText(binding.bodyEdit.text.toString())
 
+        AttachmentSpanLoader.loadAttachmentPaths(noteId, binding.bodyView)
         ImageLoader.loadImages(binding.bodyView)
 
         binding.bodyView.visibility = View.VISIBLE
@@ -457,6 +464,7 @@ class NoteFragment : Fragment(), View.OnClickListener, TimestampDialogFragment.O
 
         binding.bodyView.setRawText(payload.content ?: "")
 
+        AttachmentSpanLoader.loadAttachmentPaths(noteId, binding.bodyView)
         ImageLoader.loadImages(binding.bodyView)
     }
 
@@ -1190,13 +1198,15 @@ class NoteFragment : Fragment(), View.OnClickListener, TimestampDialogFragment.O
         private const val ARG_PLACE = "place"
         private const val ARG_TITLE = "title"
         private const val ARG_CONTENT = "content"
+        private const val ARG_ATTACHMENT_URI = "attachment_uri"
 
         @JvmStatic
         @JvmOverloads
         fun forNewNote(
                 notePlace: NotePlace,
                 initialTitle: String? = null,
-                initialContent: String? = null): NoteFragment? {
+                initialContent: String? = null,
+                attachmentUri: Uri? = null): NoteFragment? {
 
             return if (notePlace.bookId > 0) {
                 getInstance(
@@ -1204,7 +1214,8 @@ class NoteFragment : Fragment(), View.OnClickListener, TimestampDialogFragment.O
                         notePlace.noteId,
                         notePlace.place,
                         initialTitle,
-                        initialContent)
+                        initialContent,
+                        attachmentUri)
             } else {
                 Log.e(TAG, "Invalid book id ${notePlace.bookId}")
                 null
@@ -1227,7 +1238,8 @@ class NoteFragment : Fragment(), View.OnClickListener, TimestampDialogFragment.O
                 noteId: Long,
                 place: Place? = null,
                 initialTitle: String? = null,
-                initialContent: String? = null): NoteFragment {
+                initialContent: String? = null,
+                attachmentUri: Uri? = null): NoteFragment {
 
             val fragment = NoteFragment()
 
@@ -1249,6 +1261,10 @@ class NoteFragment : Fragment(), View.OnClickListener, TimestampDialogFragment.O
 
             if (initialContent != null) {
                 args.putString(ARG_CONTENT, initialContent)
+            }
+
+            if (attachmentUri != null) {
+                args.putString(ARG_ATTACHMENT_URI, attachmentUri.toString());
             }
 
             fragment.arguments = args
