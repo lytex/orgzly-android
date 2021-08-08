@@ -26,7 +26,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.material.navigation.NavigationView;
@@ -93,7 +92,6 @@ import com.orgzly.android.usecase.NoteUpdateClockingState;
 import com.orgzly.android.usecase.SavedSearchCreate;
 import com.orgzly.android.usecase.SavedSearchDelete;
 import com.orgzly.android.usecase.SavedSearchExport;
-import com.orgzly.android.usecase.SavedSearchImport;
 import com.orgzly.android.usecase.SavedSearchMoveDown;
 import com.orgzly.android.usecase.SavedSearchMoveUp;
 import com.orgzly.android.usecase.SavedSearchUpdate;
@@ -102,7 +100,6 @@ import com.orgzly.android.usecase.UseCaseResult;
 import com.orgzly.android.usecase.UseCaseRunner;
 import com.orgzly.android.util.AppPermissions;
 import com.orgzly.android.util.LogUtils;
-import com.orgzly.android.util.MiscUtils;
 import com.orgzly.org.datetime.OrgDateTime;
 
 import org.jetbrains.annotations.NotNull;
@@ -165,12 +162,13 @@ public class MainActivity extends CommonActivity
 
         setContentView(R.layout.activity_main);
 
-        sharedMainActivityViewModel = ViewModelProviders.of(this).get(SharedMainActivityViewModel.class);
+        sharedMainActivityViewModel = new ViewModelProvider(this)
+                .get(SharedMainActivityViewModel.class);
 
         ViewModelProvider.Factory factory =
                 MainActivityViewModelFactory.Companion.getInstance(dataRepository);
 
-        viewModel = ViewModelProviders.of(this, factory).get(MainActivityViewModel.class);
+        viewModel = new ViewModelProvider(this, factory).get(MainActivityViewModel.class);
 
         setupActionBar();
 
