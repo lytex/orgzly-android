@@ -462,16 +462,25 @@ class DataRepository @Inject constructor(
     @Throws(IOException::class)
     fun getTargetBook(context: Context): BookView {
         val books = getBooks()
+
         val defaultBookName = AppPreferences.shareNotebook(context)
 
         if (books.isEmpty()) {
+            if (BuildConfig.LOG_DEBUG)
+                LogUtils.d(TAG, "No existing books found, creating new \"$defaultBookName\" book")
             return createBook(defaultBookName)
+
         } else {
             for (book in books) {
                 if (defaultBookName == book.book.name) {
+                    if (BuildConfig.LOG_DEBUG)
+                        LogUtils.d(TAG, "Found book that matches default book name \"$defaultBookName\"")
                     return book
                 }
             }
+
+            if (BuildConfig.LOG_DEBUG)
+                LogUtils.d(TAG, "No existing books found to match default book name \"$defaultBookName\", using the first book")
             return books.first()
         }
     }
@@ -605,7 +614,7 @@ class DataRepository @Inject constructor(
 
         } else {
             db.runInTransaction(Callable {
-                moveSubtrees(noteIds, Place.UNDER, target.noteId)
+                moveSubtrees(noteIds, target.place, target.noteId)
             })
         }
     }
@@ -1270,6 +1279,22 @@ class DataRepository @Inject constructor(
 
     fun getNoteAndAncestors(noteId: Long): List<Note> {
         return db.note().getNoteAndAncestors(noteId)
+    }
+
+    fun getNoteAtPath(fullPath: String): NoteView? {
+        val (bookName, path) = run {
+            val pathParts = fullPath.split("/")
+            if (pathParts.isEmpty()) return null
+            pathParts[0] to pathParts.drop(1).joinToString("/")
+        }
+        return if (path.split("/").any { it.isNotEmpty() })
+            getNotes(bookName)
+                    .filter { ("/$path").endsWith("/" + it.note.title) }
+                    .firstOrNull { view ->
+                        getNoteAndAncestors(view.note.id)
+                                .joinToString("/") { it.title } == path
+                    }
+        else null
     }
 
     fun getNotesAndSubtrees(ids: Set<Long>): List<Note> {

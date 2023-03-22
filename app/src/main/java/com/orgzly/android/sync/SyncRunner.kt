@@ -14,7 +14,7 @@ import com.orgzly.android.ui.showSnackbar
 import com.orgzly.android.util.LogUtils
 
 object SyncRunner {
-    const val AUTO_SYNC_DATA = "auto-sync"
+    const val IS_AUTO_SYNC = "auto-sync"
 
     private val TAG: String = SyncRunner::class.java.name
 
@@ -32,9 +32,10 @@ object SyncRunner {
 
         val syncWorker = OneTimeWorkRequestBuilder<SyncWorker>()
             // On Android >= 12 notification from overridden getForegroundInfo might not be shown
-            // We are handing sync-in-progress notification manually
-            // .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
-            .setInputData(workDataOf(AUTO_SYNC_DATA to autoSync))
+            // Sync-in-progress notification cannot be canceled if app is killed by the system,
+            // when handling notification manually from the worker.
+            .setExpedited(OutOfQuotaPolicy.RUN_AS_NON_EXPEDITED_WORK_REQUEST)
+            .setInputData(workDataOf(IS_AUTO_SYNC to autoSync))
             .build()
 
         workManager
@@ -66,7 +67,7 @@ object SyncRunner {
     fun onStateChange(tag: String): LiveData<SyncState> {
         return Transformations.map(onAllWorkInfo()) { workInfoList ->
             syncStateFromWorkInfoList(workInfoList).also { state ->
-                logStateChange(tag, workInfoList, state)
+                logStateChange(tag, state, workInfoList)
             }
         }
 
@@ -81,9 +82,10 @@ object SyncRunner {
 //        }
     }
 
-    private fun logStateChange(tag: String, workInfoList: List<WorkInfo>?, state: SyncState?) {
+    private fun logStateChange(tag: String, state: SyncState?, workInfoList: List<WorkInfo>?) {
         if (BuildConfig.LOG_DEBUG) {
-            LogUtils.d(TAG, "-> ($tag) Workers changed state to $state <- $workInfoList")
+            // LogUtils.d(TAG, "-> ($tag) Workers changed state to $state <- $workInfoList")
+            LogUtils.d(TAG, "-> ($tag) Workers changed state to $state <- ${workInfoList?.map { it.state }}")
         }
     }
 
