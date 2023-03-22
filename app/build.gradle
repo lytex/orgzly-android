@@ -108,6 +108,8 @@ android {
 dependencies {
     implementation orgJavaLocation()
 
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.kotlin_coroutines")
+
     implementation "org.jetbrains:annotations:$versions.jetbrains_annotations"
 
     implementation "androidx.multidex:multidex:$versions.android_multidex"
@@ -130,9 +132,12 @@ dependencies {
     implementation "androidx.room:room-runtime:$versions.android_room"
     testImplementation "androidx.room:room-testing:$versions.android_room"
     kapt "androidx.room:room-compiler:$versions.android_room"
+    implementation("androidx.room:room-ktx:$versions.android_room")
 
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.android_lifecycle"
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$versions.android_lifecycle")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$versions.android_lifecycle")
 
     androidTestImplementation "androidx.annotation:annotation:$versions.android_annotation"
 

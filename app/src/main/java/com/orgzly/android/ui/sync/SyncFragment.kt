@@ -149,7 +149,8 @@ class SyncFragment : Fragment() {
 
         fun updateUi(state: SyncState) {
             setButtonTextToStateOrLastSynced(state)
-            setProgressBar(state)
+
+            setButtonIconAnimation(state)
         }
 
         private fun setButtonTextToStateOrLastSynced(state: SyncState) {
@@ -183,30 +184,21 @@ class SyncFragment : Fragment() {
             )
         }
 
-        private fun setProgressBar(state: SyncState) {
+        private fun setButtonIconAnimation(state: SyncState) {
             when (state.type) {
+                SyncState.Type.CANCELING,
                 SyncState.Type.STARTING,
                 SyncState.Type.COLLECTING_BOOKS,
-                SyncState.Type.BOOKS_COLLECTED,
-                SyncState.Type.CANCELING -> {
-                    binding.syncProgressBar.isIndeterminate = true
-                    binding.syncProgressBar.visibility = View.VISIBLE
+                SyncState.Type.BOOKS_COLLECTED -> {
                     setAnimation(true)
                 }
 
                 SyncState.Type.BOOK_STARTED,
                 SyncState.Type.BOOK_ENDED -> {
-                    binding.syncProgressBar.isIndeterminate = false
-                    binding.syncProgressBar.max = state.total
-                    binding.syncProgressBar.progress = state.current
-                    binding.syncProgressBar.visibility = View.VISIBLE
                     setAnimation(true)
                 }
 
-                SyncState.Type.AUTO_SYNC_NOT_STARTED -> {
-                    // Do nothing
-                }
-
+                SyncState.Type.AUTO_SYNC_NOT_STARTED,
                 SyncState.Type.FINISHED,
                 SyncState.Type.CANCELED,
                 SyncState.Type.FAILED_NO_REPOS,
@@ -214,7 +206,6 @@ class SyncFragment : Fragment() {
                 SyncState.Type.FAILED_NO_STORAGE_PERMISSION,
                 SyncState.Type.FAILED_NO_BOOKS_FOUND,
                 SyncState.Type.FAILED_EXCEPTION -> {
-                    binding.syncProgressBar.visibility = View.GONE
                     setAnimation(false)
                 }
             }

@@ -7,6 +7,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Environment;
 
+import androidx.annotation.StringRes;
+
 import com.orgzly.R;
 import com.orgzly.android.App;
 import com.orgzly.android.LocalStorage;
@@ -112,6 +114,27 @@ public class AppPreferences {
         /* Clear state preferences. */
         getStateSharedPreferences(context).edit().clear().apply();
     }
+
+
+    private static String getS(Context context, @StringRes int keyId, @StringRes int defaultValueId) {
+        return getS(context, context.getResources().getString(keyId), defaultValueId);
+    }
+
+    private static String getS(Context context, String key, @StringRes int defaultValueId) {
+        return getDefaultSharedPreferences(context).getString(
+                key,
+                context.getResources().getString(defaultValueId));
+    }
+
+
+    private static void setS(Context context, @StringRes int keyId, String value) {
+        setS(context, context.getResources().getString(keyId), value);
+    }
+
+    private static void setS(Context context, String key, String value) {
+        getDefaultSharedPreferences(context).edit().putString(key, value).apply();
+    }
+
 
     /*
      * User preferences.
@@ -517,6 +540,32 @@ public class AppPreferences {
         updateStaticKeywords(context);
     }
 
+    /*
+     * Note popup buttons
+     */
+
+    public static String notePopupActions(Context context, String key) {
+        if (key.equals(context.getString(R.string.pref_key_note_popup_buttons_in_book_left))) {
+            return getS(context, key, R.string.pref_default_note_popup_buttons_in_book_left);
+
+        } else if (key.equals(context.getString(R.string.pref_key_note_popup_buttons_in_book_right))) {
+            return getS(context, key, R.string.pref_default_note_popup_buttons_in_book_right);
+
+        } else if (key.equals(context.getString(R.string.pref_key_note_popup_buttons_in_query_left))) {
+            return getS(context, key, R.string.pref_default_note_popup_buttons_in_query_left);
+
+        } else if (key.equals(context.getString(R.string.pref_key_note_popup_buttons_in_query_right))) {
+            return getS(context, key, R.string.pref_default_note_popup_buttons_in_query_right);
+
+        } else {
+            return "";
+        }
+    }
+
+    public static void notePopupActions(Context context, String key, String value) {
+        setS(context, key, value);
+    }
+
     /** Get first to-do state. */
     public static String getFirstTodoState(Context context) {
         return getFirstState(AppPreferences.todoKeywordsSet(context));
@@ -681,14 +730,14 @@ public class AppPreferences {
      * File relative path.
      */
 
-    /** Root for file:/xxx links */
+    /** Root for file:/ links */
     public static String fileAbsoluteRoot(Context context) {
         return getDefaultSharedPreferences(context).getString(
                 context.getResources().getString(R.string.pref_key_file_absolute_root),
                 context.getResources().getString(R.string.pref_default_file_absolute_root));
     }
 
-    /** Root for file:xxx links */
+    /** Root for file: links */
     public static String fileRelativeRoot(Context context) {
         return getDefaultSharedPreferences(context).getString(
                 context.getResources().getString(R.string.pref_key_file_relative_root),
