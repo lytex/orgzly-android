@@ -12,10 +12,12 @@ import com.orgzly.BuildConfig
 import com.orgzly.R
 import com.orgzly.android.AppIntent
 import com.orgzly.android.SharingShortcutsManager
+import com.orgzly.android.git.SshKey
 import com.orgzly.android.prefs.*
 import com.orgzly.android.reminders.RemindersScheduler
 import com.orgzly.android.ui.CommonActivity
 import com.orgzly.android.ui.NoteStates
+import com.orgzly.android.ui.dialogs.ShowSshKeyDialogFragment
 import com.orgzly.android.ui.notifications.Notifications
 import com.orgzly.android.ui.util.KeyboardUtils
 import com.orgzly.android.usecase.NoteReparseStateAndTitles
@@ -97,8 +99,34 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             }
         }
 
+        // Disable Git repos completely on API < 23
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            preference(R.string.pref_key_git_is_enabled)?.let {
+                preferenceScreen.removePreference(it)
+            }
+        }
+
+        /* Disable SSH key generation if Git repository type is not enabled */
+        if (!AppPreferences.gitIsEnabled(context)) {
+            preference(R.string.pref_key_ssh_keygen)?.let {
+                preferenceScreen.removePreference(it)
+            }
+        }
+
+        preference(R.string.pref_key_ssh_show_public_key)?.let {
+            if (AppPreferences.gitIsEnabled(context) && SshKey.canShowSshPublicKey) {
+                it.setOnPreferenceClickListener {
+                    ShowSshKeyDialogFragment().show(childFragmentManager, "public_key")
+                    true
+                }
+            } else {
+                preferenceScreen.removePreference(it)
+            }
+        }
+
         /* Update preferences which depend on multiple others. */
         updateRemindersScreen()
+        updateWidgetScreen()
     }
 
     private fun setupVersionPreference() {
@@ -299,6 +327,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         }
 
         updateRemindersScreen()
+        updateWidgetScreen()
 
         /* Always notify about possibly changed data, if settings are modified.
          *
@@ -333,6 +362,16 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             preference(R.string.pref_key_snooze_time)?.isEnabled = remindersEnabled
             preference(R.string.pref_key_snooze_type)?.isEnabled = remindersEnabled
             preference(R.string.pref_key_daily_reminder_time)?.isEnabled = remindersEnabled
+        }
+    }
+
+    private fun updateWidgetScreen() {
+        val colorScheme = preference(R.string.pref_key_widget_color_scheme)
+
+        if (colorScheme != null) {
+            /* Widget opacity isn't supported on the dynamic color scheme. */
+            val opacityEnabled = (colorScheme as ListPreference).value != "dynamic"
+            preference(R.string.pref_key_widget_opacity)?.isEnabled = opacityEnabled
         }
     }
 

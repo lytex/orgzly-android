@@ -281,6 +281,9 @@
     <string name="pref_key_auto_sync_on_resume" translatable="false">pref_key_auto_sync_on_resume</string>
     <bool name="pref_default_auto_sync_on_resume" translatable="false">false</bool>
 
+    <string name="pref_key_auto_sync_on_suspend" translatable="false">pref_key_auto_sync_on_suspend</string>
+    <bool name="pref_default_auto_sync_on_suspend" translatable="false">false</bool>
+
     <string name="pref_key_auto_sync_on_repo_change" translatable="false">pref_key_auto_sync_on_repo_change</string>
     <bool name="pref_default_auto_sync_on_repo_change" translatable="false">false</bool>
 
@@ -330,6 +333,9 @@
 
     <string name="pref_key_keep_screen_on_menu_item" translatable="false">pref_key_keep_screen_on_menu_item</string>
     <bool name="pref_default_keep_screen_on_menu_item" translatable="false">false</bool>
+
+    <string name="pref_key_hide_empty_days_in_agenda" translatable="false">pref_key_hide_empty_days_in_agenda</string>
+    <bool name="pref_default_hide_empty_days_in_agenda" translatable="false">false</bool>
 
     <string name="pref_key_selected_note_metadata" translatable="false">pref_key_selected_note_metadata</string>
     <string-array name="note_metadata">
@@ -572,11 +578,11 @@
     <bool name="pref_default_highlight_edited_rich_text" translatable="false">false</bool>
 
     <!-- Git preferences -->
+    <string name="pref_key_git_ssh_key_type" translatable="false">pref_key_git_ssh_key_type</string>
     <string name="pref_key_git_author" traslatable="false">pref_key_git_author</string>
     <string name="pref_key_git_email" traslatable="false">pref_key_git_email</string>
     <string name="pref_key_git_https_username" translatable="false">pref_key_git_https_username</string>
     <string name="pref_key_git_https_password" translatable="false">pref_key_git_https_password</string>
-    <string name="pref_key_git_ssh_key_path" traslatable="false">pref_key_git_ssh_key_path</string>
     <string name="pref_key_git_repository_filepath" traslatable="false">pref_key_git_repository_filepath</string>
     <string name="pref_key_git_remote_name" traslatable="false">pref_key_git_remote_name</string>
     <string name="pref_key_git_branch_name" traslatable="false">pref_key_git_branch_name</string>
@@ -594,6 +600,8 @@
 
     <!-- These do not store any data. -->
     <string name="pref_key_repos" translatable="false">pref_key_repos</string>
+    <string name="pref_key_ssh_keygen" translatable="false">pref_key_ssh_keygen</string>
+    <string name="pref_key_ssh_show_public_key" translatable="false">pref_key_ssh_show_public_key</string>
     <string name="pref_key_version" translatable="false">pref_key_version</string>
     <string name="pref_key_reload_getting_started" translatable="false">pref_key_reload_getting_started</string>
     <string name="pref_key_clear_database" translatable="false">pref_key_clear_database</string>

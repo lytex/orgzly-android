@@ -837,6 +837,16 @@ public class AppPreferences {
     }
 
     /*
+     * Hide empty days in agenda
+     */
+
+    public static boolean hideEmptyDaysInAgenda(Context context) {
+        return getDefaultSharedPreferences(context).getBoolean(
+                context.getResources().getString(R.string.pref_key_hide_empty_days_in_agenda),
+                context.getResources().getBoolean(R.bool.pref_default_hide_empty_days_in_agenda));
+    }
+
+    /*
      * Widget
      */
 
@@ -925,37 +935,21 @@ public class AppPreferences {
      * Git Sync
      */
 
+    public static String gitSshKeyType(Context context) {
+        return getDefaultSharedPreferences(context).getString(
+                "pref_key_git_ssh_key_type", null);
+    }
+
+    public static void gitSshKeyType(Context context, String value) {
+        getDefaultSharedPreferences(context).edit().putString("pref_key_git_ssh_key_type", value).apply();
+    }
+
     public static boolean gitIsEnabled(Context context) {
         return getDefaultSharedPreferences(context).getBoolean(
                 context.getResources().getString(R.string.pref_key_git_is_enabled),
                 context.getResources().getBoolean(R.bool.pref_default_git_is_enabled));
     }
-
-    public static String gitAuthor(Context context) {
-        return getStateSharedPreferences(context).getString("pref_key_git_author", null);
-    }
-
-    public static void gitAuthor(Context context, String value) {
-        getStateSharedPreferences(context).edit().putString("pref_key_git_author", value).apply();
-    }
-
-    public static String gitEmail(Context context) {
-        return getStateSharedPreferences(context).getString("pref_key_git_email", null);
-    }
-
-    public static void gitEmail(Context context, String value) {
-        getStateSharedPreferences(context).edit().putString("pref_key_git_email", value).apply();
-    }
-
-    public static String gitSSHKeyPath(Context context) {
-        return getStateSharedPreferences(context).getString("pref_key_git_ssh_key_path", null);
-    }
-
-    public static void gitSSHKeyPath(Context context, String value) {
-        getStateSharedPreferences(context).edit().putString(
-                "pref_key_git_ssh_key_path", value).apply();
-    }
-
+    
     public static String defaultRepositoryStorageDirectory(Context context) {
         File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
         return getStringFromSelector(
@@ -1084,6 +1078,12 @@ public class AppPreferences {
         return getDefaultSharedPreferences(context).getBoolean(
                 context.getResources().getString(R.string.pref_key_auto_sync_on_resume),
                 context.getResources().getBoolean(R.bool.pref_default_auto_sync_on_resume));
+    }
+
+    public static boolean syncOnSuspend(Context context) {
+        return getDefaultSharedPreferences(context).getBoolean(
+                context.getResources().getString(R.string.pref_key_auto_sync_on_suspend),
+                context.getResources().getBoolean(R.bool.pref_default_auto_sync_on_suspend));
     }
 
     /*
