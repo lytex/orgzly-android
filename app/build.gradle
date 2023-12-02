@@ -12,8 +12,8 @@ android {
         minSdkVersion 21 // Lollipop (5.0)
         targetSdkVersion 32 // Android 12L
         applicationId "com.orgzlyrevived"
-        versionCode 175
-        versionName "1.8.11"
+        versionCode 183
+        versionName "1.8.14"
 
         testInstrumentationRunner "com.orgzly.android.OrgzlyTestRunner"
         // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -191,14 +191,15 @@ dependencies {
 
     implementation "io.github.rburgst:okhttp-digest:$versions.okhttp_digest"
 
-    // Git sync over SSH
+    // Git sync via SSH
     implementation "org.eclipse.jgit:org.eclipse.jgit:$versions.jgit"
-    implementation("org.eclipse.jgit:org.eclipse.jgit.ssh.apache:$versions.jgit") {
-        // Resolves DuplicatePlatformClasses lint error
-        exclude group: 'org.apache.sshd', module: 'sshd-osgi'
+    implementation "org.eclipse.jgit:org.eclipse.jgit.ssh.apache:$versions.jgit"
+    implementation("androidx.security:security-crypto:$versions.security_crypto") {
+        because 'SSH key generation'
     }
-    implementation 'androidx.security:security-crypto:1.1.0-alpha03'
-    implementation 'androidx.biometric:biometric-ktx:1.2.0-alpha04'
+    implementation("androidx.biometric:biometric-ktx:$versions.biometric_ktx") {
+        because 'Protect SSH key with biometric prompt'
+    }
 
 }
 
