@@ -277,6 +277,7 @@
     <string name="permissions_rationale_for_book_export">Exporting notebook requires storage permission</string>
     <string name="permissions_rationale_for_sync_start">Syncing with local repositories requires storage permission</string>
     <string name="permissions_rationale_for_external_files_access">Accessing external files requires storage permission</string>
+    <string name="permissions_rationale_for_post_notifications">Permission is required to post notifications</string>
 
     <string name="cycle_visibility">Fold/Unfold All</string>
     <string name="running_database_update">Upgrading database…</string>
@@ -773,6 +774,7 @@
     <string name="error_generate_ssh_key">Error while trying to generate the SSH key pair</string>
     <string name="ssh_key_error_dialog_text">Message: \n</string>
     <string name="ssh_key_locked_and_no_activity">Error: SSH key can only be unlocked from an activity</string>
+    <string name="error_file_matches_repo_ignore_rule">Repository filename matches a rule in %s</string>
 
     <!-- Sync status -->
     <string name="sync_status_no_change">No change</string>

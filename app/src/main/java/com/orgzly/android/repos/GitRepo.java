@@ -1,10 +1,14 @@
 package com.orgzly.android.repos;
 
+import static com.orgzly.android.git.GitFileSynchronizer.PRE_SYNC_MARKER_BRANCH;
+
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
 
 import com.orgzly.BuildConfig;
+import com.orgzly.R;
+import com.orgzly.android.App;
 import com.orgzly.android.BookName;
 import com.orgzly.android.db.entity.Repo;
 import com.orgzly.android.git.GitFileSynchronizer;
@@ -40,6 +44,7 @@ import java.util.List;
 public class GitRepo implements SyncRepo, TwoWaySyncRepo {
     private final static String TAG = GitRepo.class.getName();
     private final long repoId;
+    private final Context context = App.getAppContext();
 
     /**
      * Used as cause when we try to clone into a non-empty directory
@@ -158,7 +163,6 @@ public class GitRepo implements SyncRepo, TwoWaySyncRepo {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            Log.e(TAG, "JGit error:", e);
             throw new IOException(e);
         }
     }
@@ -185,6 +189,8 @@ public class GitRepo implements SyncRepo, TwoWaySyncRepo {
 
     public VersionedRook storeBook(File file, String fileName) throws IOException {
         File destination = synchronizer.repoDirectoryFile(fileName);
+        ensureRepoPathIsNotIgnored(destination.getPath());
+
         if (destination.exists()) {
             synchronizer.updateAndCommitExistingFile(file, fileName);
         } else {
@@ -235,7 +241,7 @@ public class GitRepo implements SyncRepo, TwoWaySyncRepo {
 
     private IgnoreNode getIgnores() throws IOException {
         IgnoreNode ignores = new IgnoreNode();
-        File ignoreFile = synchronizer.repoDirectoryFile(".orgzlyignore");
+        File ignoreFile = synchronizer.repoDirectoryFile(context.getString(R.string.repo_ignore_rules_file));
         if (ignoreFile.exists()) {
             FileInputStream in = new FileInputStream(ignoreFile);
             try {
@@ -247,11 +253,24 @@ public class GitRepo implements SyncRepo, TwoWaySyncRepo {
         return ignores;
     }
 
+    private void ensureRepoPathIsNotIgnored(String filePath) throws IOException {
+        IgnoreNode ignores = getIgnores();
+        if (ignores.isIgnored(filePath, false) == IgnoreNode.MatchResult.IGNORED) {
+            throw new IOException(context.getString(R.string.error_file_matches_repo_ignore_rule,
+                    context.getString(R.string.repo_ignore_rules_file)));
+        }
+    }
+
     public boolean isUnchanged() throws IOException {
         // Check if the current head is unchanged.
         // If so, we can read all the VersionedRooks from the database.
         synchronizer.setBranchAndGetLatest();
-        return synchronizer.currentHead().equals(synchronizer.getCommit("orgzly-pre-sync-marker"));
+        // If current HEAD is null, there are no commits, and this means there are no remote
+        // changes to handle.
+        if (synchronizer.currentHead() == null) return true;
+        if (synchronizer.currentHead().equals(synchronizer.getCommit(PRE_SYNC_MARKER_BRANCH)))
+            return true;
+        return false;
     }
 
     public List<VersionedRook> getBooks() throws IOException {
@@ -309,6 +328,7 @@ public class GitRepo implements SyncRepo, TwoWaySyncRepo {
     public VersionedRook renameBook(Uri oldUri, String newRookName) throws IOException {
         String oldFileName = oldUri.toString().replaceFirst("^/", "");
         String newFileName = newRookName + ".org";
+        ensureRepoPathIsNotIgnored(newFileName);
         if (synchronizer.renameFileInRepo(oldFileName, newFileName)) {
             synchronizer.tryPush();
             return currentVersionedRook(Uri.EMPTY.buildUpon().appendPath(newFileName).build());

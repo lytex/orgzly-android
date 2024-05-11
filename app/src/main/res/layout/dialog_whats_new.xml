@@ -22,6 +22,89 @@
 
         <TextView
             style="@style/WhatsNewVersion"
+            android:text="v1.8.21"
+            tools:ignore="HardcodedText" />
+
+        <com.orgzly.android.ui.views.WhatsNewChange
+            style="@style/WhatsNewChange"
+            app:text="Fix F-Droid build not being reproducible" />
+
+        <TextView
+            style="@style/WhatsNewVersion"
+            android:text="v1.8.20"
+            tools:ignore="HardcodedText" />
+
+        <com.orgzly.android.ui.views.WhatsNewChange
+            style="@style/WhatsNewChange"
+            app:text="Fix broken Dropbox account linking" />
+
+        <TextView
+            style="@style/WhatsNewVersion"
+            android:text="v1.8.19"
+            tools:ignore="HardcodedText" />
+
+        <com.orgzly.android.ui.views.WhatsNewChange
+            style="@style/WhatsNewChange"
+            app:text="Git: Check .orgzlyignore when writing files" />
+
+        <TextView
+            style="@style/WhatsNewVersion"
+            android:text="v1.8.18"
+            tools:ignore="HardcodedText" />
+
+        <com.orgzly.android.ui.views.WhatsNewChange
+            style="@style/WhatsNewChange"
+            app:text="Support syncing to empty Git repository" />
+
+        <TextView
+            style="@style/WhatsNewVersion"
+            android:text="v1.8.17"
+            tools:ignore="HardcodedText" />
+
+        <com.orgzly.android.ui.views.WhatsNewChange
+            style="@style/WhatsNewChange"
+            app:text="Various fixes for Git repos" />
+
+        <com.orgzly.android.ui.views.WhatsNewChange
+            style="@style/WhatsNewChange"
+            app:text="Fix broken app shortcuts" />
+
+        <TextView
+            style="@style/WhatsNewVersion"
+            android:text="v1.8.16"
+            tools:ignore="HardcodedText" />
+
+        <com.orgzly.android.ui.views.WhatsNewChange
+            style="@style/WhatsNewChange"
+            app:text="Prevent adding undesired newline between drawers in header" />
+
+        <TextView
+            style="@style/WhatsNewVersion"
+            android:text="v1.8.15"
+            tools:ignore="HardcodedText" />
+
+        <com.orgzly.android.ui.views.WhatsNewChange
+            style="@style/WhatsNewChange"
+            app:text="Log sync events to major events app log" />
+
+        <com.orgzly.android.ui.views.WhatsNewChange
+            style="@style/WhatsNewChange"
+            app:text="Removed forced Light theme for splash screen" />
+
+        <com.orgzly.android.ui.views.WhatsNewChange
+            style="@style/WhatsNewChange"
+            app:text="Turkish translation updated" />
+
+        <com.orgzly.android.ui.views.WhatsNewChange
+            style="@style/WhatsNewChange"
+            app:text="Disable Git repos below API 24" />
+
+        <com.orgzly.android.ui.views.WhatsNewChange
+            style="@style/WhatsNewChange"
+            app:text="Add a public receiver for Tasker, Automate, etc." />
+
+        <TextView
+            style="@style/WhatsNewVersion"
             android:text="v1.8.14"
             tools:ignore="HardcodedText" />
 

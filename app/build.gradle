@@ -2,18 +2,18 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
-
 android {
     namespace 'com.orgzly'
 
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     defaultConfig {
-        minSdkVersion 21 // Lollipop (5.0)
-        targetSdkVersion 32 // Android 12L
-        applicationId "com.orgzlyrevived"
-        versionCode 183
-        versionName "1.8.14"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 202
+        versionName "1.8.21"
+        applicationId = "com.orgzlyrevived"
+        resValue "string", "application_id", "com.orgzlyrevived"
 
         testInstrumentationRunner "com.orgzly.android.OrgzlyTestRunner"
         // testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -21,6 +21,7 @@ android {
         multiDexEnabled true
 
         buildConfigField "String", "DROPBOX_APP_KEY", gradle.ext.appProperties.getProperty("dropbox.app_key", '""')
+
         resValue "string", "dropbox_app_key_schema", gradle.ext.appProperties.getProperty("dropbox.app_key_schema", '')
 
         javaCompileOptions {
@@ -56,7 +57,7 @@ android {
         debug {
             buildConfigField "boolean", "LOG_DEBUG", "true"
 
-            buildConfigField "String", "DROPBOX_TOKEN", gradle.ext.appProperties.getProperty("dropbox.token", '""')
+            buildConfigField "String", "DROPBOX_REFRESH_TOKEN", gradle.ext.appProperties.getProperty("dropbox.refresh_token", '""')
         }
     }
 
@@ -183,24 +184,26 @@ dependencies {
         exclude group: 'xpp3', module: 'xpp3'
     }
 
-    constraints {
-        implementation('com.squareup.okhttp3:okhttp:4.10.0-RC1') {
-            because 'https://github.com/orgzly/orgzly-android/issues/880'
-        }
+    implementation('com.squareup.okhttp3:okhttp:4.10.0-RC1') {
+        because 'https://github.com/orgzly/orgzly-android/issues/880'
     }
 
     implementation "io.github.rburgst:okhttp-digest:$versions.okhttp_digest"
 
-    // Git sync via SSH
-    implementation "org.eclipse.jgit:org.eclipse.jgit:$versions.jgit"
-    implementation "org.eclipse.jgit:org.eclipse.jgit.ssh.apache:$versions.jgit"
+    implementation("org.eclipse.jgit:org.eclipse.jgit:$versions.jgit") {
+        because 'Git repo support'
+    }
+    implementation("org.eclipse.jgit:org.eclipse.jgit.ssh.apache:$versions.jgit") {
+        because 'SSH transport support for Git repos'
+        // Avoid DuplicatePlatformClasses error:
+        exclude group: 'org.apache.sshd', module: 'sshd-sftp'
+    }
     implementation("androidx.security:security-crypto:$versions.security_crypto") {
         because 'SSH key generation'
     }
     implementation("androidx.biometric:biometric-ktx:$versions.biometric_ktx") {
         because 'Protect SSH key with biometric prompt'
     }
-
 }
 
 repositories {
@@ -216,7 +219,7 @@ def orgJavaLocation() {
         logger.info("app: Using org-java from ${gradle.ext.orgJavaDir}")
         return project(':org-java')
     } else {
-        logger.info("app: Using com.orgzly:org-java:$versions.org_java from Maven repository")
-        return "com.orgzly:org-java:$versions.org_java"
+        logger.info("app: Using com.github.orgzly-revived:org-java:$versions.org_java from Maven repository")
+        return "com.github.orgzly-revived:org-java:$versions.org_java"
     }
 }
